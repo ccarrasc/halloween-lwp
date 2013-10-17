@@ -55,7 +55,7 @@ public class BackgroundMesh
         mesh.setVertices(new float[] {center.x - halfWidth,
                                       center.y + halfHeight,
                                       0,
-                                      Color.toFloatBits(r + 1, g + 1, b + 1, a), // 0
+                                      Color.toFloatBits(r + 10, g + 1, b + 1, a), // 0
                                       center.x - halfWidth,
                                       center.y - halfHeight,
                                       0,
@@ -63,7 +63,7 @@ public class BackgroundMesh
                                       center.x,
                                       center.y + halfHeight,
                                       0,
-                                      Color.toFloatBits(r + 2, g + 2, b + 2, a), // 2
+                                      Color.toFloatBits(r + 2, g + 20, b + 2, a), // 2
                                       center.x,
                                       center.y - halfHeight,
                                       0,
@@ -71,11 +71,11 @@ public class BackgroundMesh
                                       center.x + halfWidth,
                                       center.y + halfHeight,
                                       0,
-                                      Color.toFloatBits(r - 3, g - 3, b - 3, a), // 4
+                                      Color.toFloatBits(r - 3, g - 30, b - 3, a), // 4
                                       center.x + halfWidth,
                                       center.y - halfHeight,
                                       0,
-                                      Color.toFloatBits(r + 1, g + 1, b + 1, a), // 5
+                                      Color.toFloatBits(r + 10, g + 10, b + 1, a), // 5
         });
     }
 }

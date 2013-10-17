@@ -19,15 +19,8 @@ public class LiveWallpaper implements ApplicationListener
     private Vector2 gravity = new Vector2(0f, 0.02f);
     private static final float TIME_STEP = 1f / 45f;
 
-    // Camera
-    private OrthographicCamera camera = new OrthographicCamera();
-    private float viewWidth, viewHalfWidth;
-    private float viewHeight, viewHalfHeight;
-    private float aspectRatio;
-    private static Vector2 scrollOffset = new Vector2();
-    private Vector3 cameraOffset = new Vector3();
-    private Vector3 cameraPrevious = new Vector3();
-
+    private static WallpaperCamera camera = new WallpaperCamera();
+    
     // Background
     BackgroundMesh backgroundMesh;
 
@@ -49,8 +42,9 @@ public class LiveWallpaper implements ApplicationListener
         }
 
         world = SimpleWorld.newWorld(gravity);
-        backgroundMesh = new BackgroundMesh(20f, 20f, worldWidth / 2f, worldHeight / 2f);
+        backgroundMesh = new BackgroundMesh(30f, 30f, worldWidth * 0.5f, worldHeight * 0.5f);
         batch = new SpriteBatch();
+        Assets.load();
     }
 
     @Override
@@ -68,7 +62,7 @@ public class LiveWallpaper implements ApplicationListener
     @Override
     public void render()
     {
-        updateCamera();
+        camera.update();
 
         Gdx.gl.glClearColor(0f, 0f, 0f, 0.5f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -92,27 +86,25 @@ public class LiveWallpaper implements ApplicationListener
     @Override
     public void resize(int width, int height)
     {
+        float viewportWidth;
+        float viewportHeight;
+        float aspectRatio;
+        
         if(width < height)
         {
-            viewWidth = width * (worldHeight / height);
-            viewHeight = worldHeight;
+            viewportWidth = width * (worldHeight / height);
+            viewportHeight = worldHeight;
         }
         else
         {
-            viewWidth = height * (worldHeight / width);
+            viewportWidth = height * (worldHeight / width);
         }
 
         aspectRatio = (float)width / (float)height;
-        viewHeight = (width < height) ? worldHeight : viewWidth;
-        viewHalfWidth = viewWidth * 0.5f;
-        viewHalfHeight = viewHeight * 0.5f;
-
-        camera.setToOrtho(false, viewHeight * aspectRatio, viewHeight);
-        camera.position.set(viewHalfWidth + (viewWidth * scrollOffset.x), viewHalfHeight, 0);
-
-        // reset the previous position
-        cameraPrevious.set(camera.position);
-        backgroundMesh.updateVertices(new Vector2(worldWidth * 0.5f, viewHalfHeight));
+        viewportHeight = (width < height) ? worldHeight : viewportWidth;
+        camera.resize(viewportWidth, viewportHeight, aspectRatio);
+        
+        backgroundMesh.updateVertices(new Vector2(worldWidth * 0.5f, viewportHeight * 0.5f));
     }
 
     @Override
@@ -123,19 +115,7 @@ public class LiveWallpaper implements ApplicationListener
 
     public static void setOffset(float x, float y)
     {
-        scrollOffset.set(x, y);
-    }
-
-    private void updateCamera()
-    {
-        cameraPrevious.set(camera.position);
-        camera.position.set(viewHalfWidth + (viewWidth * scrollOffset.x), 
-                            viewHalfHeight, 
-                            0);
-        camera.update();
-        cameraOffset.set(camera.position.x - cameraPrevious.x,
-                         camera.position.y - cameraPrevious.y,
-                         0);
+        camera.setOffset(x, y);
     }
 
     private void updateGravity()
