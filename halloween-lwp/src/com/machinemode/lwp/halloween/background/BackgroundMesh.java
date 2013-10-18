@@ -39,17 +39,22 @@ public class BackgroundMesh
         mesh.setIndices(new short[] { 0, 1, 2, 3, 4, 5 });
     }
 
-    public void updateVertices(Vector2 center)
+    public void dispose()
     {
-        this.center = center;
-        loadVertices();
+        mesh.dispose();
     }
-
+    
     public void render()
     {
         mesh.render(GL20.GL_TRIANGLE_STRIP, 0, vertexCount);
     }
 
+    public void updateVertices(Vector2 center)
+    {
+        this.center = center;
+        loadVertices();
+    }
+    
     private void loadVertices()
     {
         mesh.setVertices(new float[] {center.x - halfWidth,

@@ -15,4 +15,9 @@ public class Assets
         texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
         ghostPumpkin = new TextureRegion(texture, 0, 0, 256, 256);
     }
+    
+    public static void dispose()
+    {
+        ghostPumpkin.getTexture().dispose();
+    }
 }

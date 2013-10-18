@@ -20,7 +20,7 @@ public class WallpaperCamera extends OrthographicCamera
         viewportWidth = width;
         viewportHeight = height;
         center.set(viewportWidth * 0.5f, viewportHeight * 0.5f);
-        setToOrtho(false, viewportWidth * aspectRatio, viewportHeight);
+        setToOrtho(false, viewportHeight * aspectRatio, viewportHeight);
         position.set(center.x + (viewportWidth * offset.x), center.y, 0);
     }
     

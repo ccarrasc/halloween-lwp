@@ -1,29 +1,44 @@
 package com.machinemode.lwp.halloween;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Pool;
 import com.machinemode.lwp.halloween.background.BackgroundMesh;
 import com.machinemode.lwp.halloween.physics.SimpleWorld;
+import com.machinemode.lwp.halloween.sprites.Ghost;
 
 public class LiveWallpaper implements ApplicationListener
 {
-    private World world;
+    protected World world;
     private final float worldHeight = 10.0f;
     private float worldWidth;
-    private Vector2 gravity = new Vector2(0f, 0.02f);
+    private Vector2 gravity = new Vector2();
     private static final float TIME_STEP = 1f / 45f;
-
+    
     private static WallpaperCamera camera = new WallpaperCamera();
     
     // Background
     BackgroundMesh backgroundMesh;
 
+    private List<Ghost> activeGhosts = new ArrayList<Ghost>();
+    private Pool<Ghost> ghostPool = new Pool<Ghost>()
+    {
+        @Override
+        protected Ghost newObject()
+        {
+            return new Ghost(world, Assets.ghostPumpkin, 1);
+        }   
+    };
+    
     private SpriteBatch batch;
 
     @Override
@@ -42,9 +57,12 @@ public class LiveWallpaper implements ApplicationListener
         }
 
         world = SimpleWorld.newWorld(gravity);
+        Assets.load();
         backgroundMesh = new BackgroundMesh(30f, 30f, worldWidth * 0.5f, worldHeight * 0.5f);
         batch = new SpriteBatch();
-        Assets.load();
+        Ghost ghost = ghostPool.obtain();
+        ghost.init(new Vector2(2, 2));
+        activeGhosts.add(ghost);
     }
 
     @Override
@@ -56,7 +74,10 @@ public class LiveWallpaper implements ApplicationListener
     @Override
     public void dispose()
     {
-        batch.dispose();
+//        Assets.dispose();
+//        backgroundMesh.dispose();
+//        batch.dispose();
+//        world.dispose();
     }
 
     @Override
@@ -70,7 +91,18 @@ public class LiveWallpaper implements ApplicationListener
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-
+        
+        for(int i = 0; i < activeGhosts.size(); ++i)
+        {
+            Ghost ghost = activeGhosts.get(i);
+            if(ghost.getPosition().y > worldHeight)
+            {
+                ghost.reset();
+            }
+            
+            ghost.render(batch);
+        }
+        
         batch.end();
 
         if(Gdx.input.justTouched())
@@ -103,7 +135,6 @@ public class LiveWallpaper implements ApplicationListener
         aspectRatio = (float)width / (float)height;
         viewportHeight = (width < height) ? worldHeight : viewportWidth;
         camera.resize(viewportWidth, viewportHeight, aspectRatio);
-        
         backgroundMesh.updateVertices(new Vector2(worldWidth * 0.5f, viewportHeight * 0.5f));
     }
 
@@ -117,12 +148,12 @@ public class LiveWallpaper implements ApplicationListener
     {
         camera.setOffset(x, y);
     }
-
+    
     private void updateGravity()
     {
-        float x = Gdx.input.getAccelerometerX() * 0.01f;
-        float y = Gdx.input.getAccelerometerY() * 0.01f;
-
+        float x = Gdx.input.getAccelerometerX() * 0.001f;
+        float y = Gdx.input.getAccelerometerY() * 0.001f;
+        
         switch(Gdx.input.getRotation())
         {
             case 0: // Surface.ROTATION_0
@@ -144,14 +175,14 @@ public class LiveWallpaper implements ApplicationListener
         world.setGravity(gravity);
     }
 
-    private void processTouchEvent()
+    private static void processTouchEvent()
     {
         Vector3 touchPos = new Vector3();
         touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(touchPos);
-        /*
-         * for(Pumpkin pumpkin : pumpkins) { if(pumpkin.isCollision(touchPos.x, touchPos.y)) { // do
-         * domething break; } }
-         */
+        Gdx.app.log("Touch", touchPos.toString());
+        Gdx.app.log("Rotation", String.valueOf(Gdx.input.getRotation()));
+        Gdx.app.log("X", String.valueOf(Gdx.input.getAccelerometerX()));
+        Gdx.app.log("Y", String.valueOf(Gdx.input.getAccelerometerY()));
     }
 }
