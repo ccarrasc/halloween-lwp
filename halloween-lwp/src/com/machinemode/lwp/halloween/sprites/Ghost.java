@@ -1,6 +1,5 @@
 package com.machinemode.lwp.halloween.sprites;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -13,35 +12,32 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
-public class Ghost implements Poolable
+public final class Ghost extends GameObject implements Poolable
 {
-    private Body body;
-    private Sprite sprite;
     private float radius;
-
+       
     public Ghost(World world, TextureRegion textureRegion, float diameter)
     {
+        super(world, textureRegion, diameter, diameter);
         radius = diameter * 0.5f;
-
-        sprite = new Sprite(textureRegion);
-        sprite.setBounds(0, 0, diameter, diameter);
-        sprite.setOrigin(radius, radius); // center = [ width/2, height/2]
-
-        body = createCircularBody(world, radius);
     }
 
+    @Override
     public void init(Vector2 position)
     {
-        body.getPosition().set(position);
+        body.setAwake(true);
+        body.setTransform(position, 0);
     }
     
     @Override
     public void reset()
     {
-        body.setTransform(new Vector2(6.5f, 3f), 0);
+        body.setTransform(new Vector2(0.0f, 0.0f), 0);
         body.setLinearVelocity(0, 0);
+        body.setAwake(false);
     }
     
+    @Override
     public void render(SpriteBatch spriteBatch)
     {
         sprite.setPosition(body.getPosition().x - sprite.getOriginX(), 
@@ -49,12 +45,8 @@ public class Ghost implements Poolable
         sprite.setRotation(MathUtils.radiansToDegrees * body.getAngle());
         sprite.draw(spriteBatch);
     }
-
-    public Vector2 getPosition()
-    {
-        return body.getPosition();
-    }
     
+    @Override
     public boolean isCollision(float x, float y)
     {
         Vector2 center = body.getWorldCenter();
@@ -69,14 +61,14 @@ public class Ghost implements Poolable
         return false;
     }
 
-    private Body createCircularBody(World world, float radius)
+    @Override
+    protected Body createBody(World world, float width, float height)
     {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
-        //bodyDef.angularDamping = 0.9f;
-        //bodyDef.linearDamping = 1.0f;
-        Body circularBody = world.createBody(bodyDef);
-
+        bodyDef.angularDamping = 0.5f;
+        bodyDef.linearDamping = 0.2f;
+        
         CircleShape circle = new CircleShape();
         circle.setRadius(radius);
 
@@ -85,9 +77,13 @@ public class Ghost implements Poolable
         fixtureDef.density = 0.3f; 
         fixtureDef.friction = 0.4f;
         fixtureDef.restitution = 0.3f; 
+        
+        Body circularBody = world.createBody(bodyDef);
         circularBody.createFixture(fixtureDef);
-        circle.dispose();
         circularBody.setUserData(this);
+        
+        circle.dispose();
+        
         return circularBody;
     }
 }
