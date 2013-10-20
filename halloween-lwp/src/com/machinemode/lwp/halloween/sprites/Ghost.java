@@ -1,5 +1,7 @@
 package com.machinemode.lwp.halloween.sprites;
 
+import java.util.Random;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -25,8 +27,13 @@ public final class Ghost extends GameObject implements Poolable
     @Override
     public void init(Vector2 position)
     {
+        Random rand = new Random();
+        float x = rand.nextInt(20) - 10;//-1.0f + rand.nextFloat() * 2.0f;
+        float y = rand.nextInt(20) - 10;//-1.0f + rand.nextFloat() * 2.0f;
         body.setAwake(true);
         body.setTransform(position, 0);
+        body.applyLinearImpulse(new Vector2(x, y), position);
+        body.applyAngularImpulse(-1.0f + rand.nextFloat() * 2);
     }
     
     @Override
@@ -40,6 +47,8 @@ public final class Ghost extends GameObject implements Poolable
     @Override
     public void render(SpriteBatch spriteBatch)
     {
+        Random rand = new Random();
+        body.applyTorque(-2.0f + rand.nextFloat() * 4);
         sprite.setPosition(body.getPosition().x - sprite.getOriginX(), 
                            body.getPosition().y - sprite.getOriginY());
         sprite.setRotation(MathUtils.radiansToDegrees * body.getAngle());
@@ -61,7 +70,7 @@ public final class Ghost extends GameObject implements Poolable
         return false;
     }
 
-    @Override
+    @Override   
     protected Body createBody(World world, float width, float height)
     {
         BodyDef bodyDef = new BodyDef();
@@ -70,17 +79,18 @@ public final class Ghost extends GameObject implements Poolable
         bodyDef.linearDamping = 0.2f;
         
         CircleShape circle = new CircleShape();
-        circle.setRadius(radius);
+        circle.setRadius(width);    // radius not set here as this is called by base class cntr
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circle;
         fixtureDef.density = 0.3f; 
         fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 0.3f; 
+        //fixtureDef.restitution = 0.3f; 
         
         Body circularBody = world.createBody(bodyDef);
         circularBody.createFixture(fixtureDef);
         circularBody.setUserData(this);
+        circularBody.resetMassData();
         
         circle.dispose();
         

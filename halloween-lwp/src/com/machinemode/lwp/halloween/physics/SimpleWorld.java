@@ -54,7 +54,7 @@ public class SimpleWorld
         @Override
         public void preSolve(Contact contact, Manifold oldManifold)
         {
-            contact.setEnabled(true);
+            contact.setEnabled(false);
         }
 
         /**

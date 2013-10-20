@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.machinemode.lwp.halloween.background.BackgroundMesh;
 import com.machinemode.lwp.halloween.physics.SimpleWorld;
 import com.machinemode.lwp.halloween.sprites.Ghost;
-import com.machinemode.lwp.halloween.sprites.PoolManager;
+import com.machinemode.lwp.halloween.sprites.GameObjectPoolManager;
 
 public class LiveWallpaper implements ApplicationListener
 {
@@ -27,7 +27,7 @@ public class LiveWallpaper implements ApplicationListener
     private static WallpaperCamera camera = new WallpaperCamera();
     
     private BackgroundMesh backgroundMesh;
-    private PoolManager<Ghost> ghostManager;
+    private GameObjectPoolManager<Ghost> ghostManager;
     private SpriteBatch batch;
 
     @Override
@@ -54,7 +54,7 @@ public class LiveWallpaper implements ApplicationListener
                                                  boundaryOffset, 
                                                  worldWidth + boundaryPadding, 
                                                  worldHeight + boundaryPadding);
-        ghostManager = new PoolManager<Ghost>(10, 10, spriteBoundary)
+        ghostManager = new GameObjectPoolManager<Ghost>(100, 2, spriteBoundary)
         {
             @Override
             protected Ghost newGameObject()
@@ -130,6 +130,7 @@ public class LiveWallpaper implements ApplicationListener
 
     public static void setOffset(float x, float y)
     {
+        Gdx.app.log("Offset", "[" + x + ", " + y + "]");
         camera.setOffset(x, y);
     }
 }

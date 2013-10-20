@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -11,7 +12,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
-public abstract class PoolManager<T extends GameObject>
+public abstract class GameObjectPoolManager<T extends GameObject>
 {
     protected List<T> activeObjects;
     protected Pool<T> pool;
@@ -26,10 +27,11 @@ public abstract class PoolManager<T extends GameObject>
             T gameObject = pool.obtain();
             gameObject.init(getSpawnCoords());
             activeObjects.add(gameObject);
+            //Gdx.app.log("Pool Manager", activeObjects.size() + " active ghosts");
         }
     };
 
-    public PoolManager(int max, int maxDelay, Rectangle boundary)
+    public GameObjectPoolManager(int max, int maxDelay, Rectangle boundary)
     {
         maxActive = max;
         maxSpawnDelay = maxDelay;
@@ -70,7 +72,9 @@ public abstract class PoolManager<T extends GameObject>
         if(activeObjects.size() < maxActive && !spawn.isScheduled())
         {
             Random rand = new Random();
-            Timer.schedule(spawn, rand.nextInt(maxSpawnDelay));
+            float delay = rand.nextInt(maxSpawnDelay);
+            Timer.schedule(spawn, delay);
+            //Gdx.app.log("Timer", delay + " second delay set");
         }
     }
 }

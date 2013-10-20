@@ -16,9 +16,9 @@ public class BackgroundMesh
     private float halfWidth;
     private float halfHeight;
     private Vector2 center = new Vector2();
-    private int r = 0;
-    private int g = 0;
-    private int b = 0;
+    private int r = 191;
+    private int g = 81;
+    private int b = 7;
     private int a = 127;
     
     public BackgroundMesh(float w, float h, float x, float y)
@@ -60,27 +60,27 @@ public class BackgroundMesh
         mesh.setVertices(new float[] {center.x - halfWidth,
                                       center.y + halfHeight,
                                       0,
-                                      Color.toFloatBits(r + 10, g + 1, b + 1, a), // 0
+                                      Color.toFloatBits(r, g, b, a), // 0
                                       center.x - halfWidth,
                                       center.y - halfHeight,
                                       0,
-                                      Color.toFloatBits(r - 1, g - 1, b - 1, a), // 1
+                                      Color.toFloatBits(r, g, b, a), // 1
                                       center.x,
                                       center.y + halfHeight,
                                       0,
-                                      Color.toFloatBits(r + 2, g + 20, b + 2, a), // 2
+                                      Color.toFloatBits(0, 0, 0, a), // 2
                                       center.x,
                                       center.y - halfHeight,
                                       0,
-                                      Color.toFloatBits(r, g, b, a), // 3
+                                      Color.toFloatBits(0, 0, 0, a), // 3
                                       center.x + halfWidth,
                                       center.y + halfHeight,
                                       0,
-                                      Color.toFloatBits(r - 3, g - 30, b - 3, a), // 4
+                                      Color.toFloatBits(r, g, b, a), // 4
                                       center.x + halfWidth,
                                       center.y - halfHeight,
                                       0,
-                                      Color.toFloatBits(r + 10, g + 10, b + 1, a), // 5
+                                      Color.toFloatBits(r, g, b, a), // 5
         });
     }
 }
