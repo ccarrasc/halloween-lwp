@@ -8,12 +8,12 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class SimpleWorld
+public final class SimpleWorld
 {
     /**
      * Static contact listener. Called every time a collision occurs.
      */
-    private static ContactListener contactListener = new ContactListener()
+    private static final ContactListener contactListener = new ContactListener()
     {
         /**
          * This event is called when two fixtures begin to overlap or start to collide. Usually we
@@ -67,6 +67,14 @@ public class SimpleWorld
             // TODO Auto-generated method stub
         }
     };
+    
+    /**
+     * Suppressed to prevent instantiation
+     */
+    private SimpleWorld()
+    {
+        throw new AssertionError();
+    }
     
     public static World newWorld(Vector2 gravity)
     {

@@ -11,25 +11,30 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.machinemode.lwp.halloween.background.BackgroundMesh;
 import com.machinemode.lwp.halloween.physics.SimpleWorld;
-import com.machinemode.lwp.halloween.sprites.Ghost;
 import com.machinemode.lwp.halloween.sprites.GameObjectPoolManager;
+import com.machinemode.lwp.halloween.sprites.Ghost;
 
 public class LiveWallpaper implements ApplicationListener
 {
-    protected World world;
-    protected final float worldHeight = 10.0f;
-    protected float worldWidth;
-    private Vector2 gravity = new Vector2(0.0f, 0.1f);
-    private static final float TIME_STEP = 1f / 45f;
+    World world;
+    float worldWidth;
+    private static final float WORLD_HEIGHT = 10.0f;
+    private static final float BACKGROUND_SIZE = WORLD_HEIGHT * 3.0f;
     private float boundaryOffset = -5;
     private float boundaryPadding = 10;
     
-    private static WallpaperCamera camera = new WallpaperCamera();
+    private Vector2 gravity = new Vector2(0.0f, 0.1f);
+    private static final float TIME_STEP = 1.0f / 30.0f;
+    private static final int VELOCITY_ITERATIONS = 10;
+    private static final int POSITION_ITERATIONS = 10;
     
+    static Random rand = new Random();
+
+    private static WallpaperCamera camera = new WallpaperCamera();
     private BackgroundMesh backgroundMesh;
     private GameObjectPoolManager<Ghost> ghostManager;
     private SpriteBatch batch;
-
+    
     @Override
     public void create()
     {
@@ -39,34 +44,47 @@ public class LiveWallpaper implements ApplicationListener
 
         if(pixelWidth < pixelHeight)
         {
-            worldWidth = pixelWidth * (worldHeight / pixelHeight) * 2;
+            worldWidth = pixelWidth * (WORLD_HEIGHT / pixelHeight) * 2;
         }
         else
         {
-            worldWidth = pixelHeight * (worldHeight / pixelWidth) * 2;
+            worldWidth = pixelHeight * (WORLD_HEIGHT / pixelWidth) * 2;
         }
 
         world = SimpleWorld.newWorld(gravity);
-        backgroundMesh = new BackgroundMesh(30f, 30f, worldWidth * 0.5f, worldHeight * 0.5f);
+        backgroundMesh = new BackgroundMesh(BACKGROUND_SIZE,
+                                            BACKGROUND_SIZE,
+                                            worldWidth * 0.5f,
+                                            WORLD_HEIGHT * 0.5f);
+
         batch = new SpriteBatch();
-        
-        Rectangle spriteBoundary = new Rectangle(boundaryOffset, 
-                                                 boundaryOffset, 
-                                                 worldWidth + boundaryPadding, 
-                                                 worldHeight + boundaryPadding);
-        ghostManager = new GameObjectPoolManager<Ghost>(100, 2, spriteBoundary)
+
+        Rectangle spriteBoundary = new Rectangle(boundaryOffset, boundaryOffset, worldWidth
+                + boundaryPadding, WORLD_HEIGHT + boundaryPadding);
+
+        ghostManager = new GameObjectPoolManager<Ghost>(50, 2, spriteBoundary)
         {
             @Override
             protected Ghost newGameObject()
             {
-                return new Ghost(world, Assets.ghostPumpkin, 2);
+                return new Ghost.Builder(Assets.ghost, 2).angularDamping(0.2f)
+                                                         .linearDamping(0.5f)
+                                                         .density(0.3f)
+                                                         .friction(0.4f)
+                                                         .rotate(rand.nextBoolean())
+                                                         .build(world);
             }
 
             @Override
-            protected Vector2 getSpawnCoords()
+            protected Vector2 getPosition()
             {
-                Random rand = new Random();
                 return new Vector2(rand.nextInt((int)worldWidth), -2.0f);
+            }
+
+            @Override
+            protected float getAngle()
+            {
+                return -0.5f + rand.nextFloat() * 1.0f;
             }
         };
     }
@@ -90,13 +108,13 @@ public class LiveWallpaper implements ApplicationListener
         Gdx.gl.glClearColor(0f, 0f, 0f, 0.5f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         backgroundMesh.render();
-        
+
         batch.setProjectionMatrix(camera.combined);
-        batch.begin();       
+        batch.begin();
         ghostManager.update(batch);
         batch.end();
-        
-        world.step(TIME_STEP, 6, 2);
+
+        world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
     }
 
     @Override
@@ -105,19 +123,19 @@ public class LiveWallpaper implements ApplicationListener
         float viewportWidth;
         float viewportHeight;
         float aspectRatio;
-        
+
         if(width < height)
         {
-            viewportWidth = width * (worldHeight / height);
-            viewportHeight = worldHeight;
+            viewportWidth = width * (WORLD_HEIGHT / height);
+            viewportHeight = WORLD_HEIGHT;
         }
         else
         {
-            viewportWidth = height * (worldHeight / width);
+            viewportWidth = height * (WORLD_HEIGHT / width);
         }
 
         aspectRatio = (float)width / (float)height;
-        viewportHeight = (width < height) ? worldHeight : viewportWidth;
+        viewportHeight = (width < height) ? WORLD_HEIGHT : viewportWidth;
         camera.resize(viewportWidth, viewportHeight, aspectRatio);
         backgroundMesh.updateVertices(new Vector2(worldWidth * 0.5f, viewportHeight * 0.5f));
     }
@@ -130,7 +148,6 @@ public class LiveWallpaper implements ApplicationListener
 
     public static void setOffset(float x, float y)
     {
-        Gdx.app.log("Offset", "[" + x + ", " + y + "]");
         camera.setOffset(x, y);
     }
 }

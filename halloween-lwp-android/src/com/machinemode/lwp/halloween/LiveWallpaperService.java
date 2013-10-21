@@ -38,7 +38,10 @@ public class LiveWallpaperService extends AndroidLiveWallpaperService
         AndroidWallpaperEngine engine = new AndroidWallpaperEngine()
         {
             @Override
-            public void onSurfaceChanged(final SurfaceHolder holder, final int format, final int width, final int height)
+            public void onSurfaceChanged(final SurfaceHolder holder, 
+                                         final int format, 
+                                         final int width, 
+                                         final int height)
             {
                 super.onSurfaceChanged(holder, format, width, height);
             }

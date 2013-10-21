@@ -21,9 +21,8 @@ public class ParallaxLayer
     {
         ratio = new Vector2(parallaxRatio);
         sprite = new Sprite(textureRegion);
-
         sprite.setBounds(x, y, width, height);
-        sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
+        sprite.setOrigin(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
         sprite.setRotation(degrees);
     }
 

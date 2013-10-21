@@ -9,8 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class BackgroundMesh
 {
-    private static final int vertexCount = 6;
-    private static final int indexCount = 6;
+    private static final int VERTEX_COUNT = 6;
+    private static final int INDEX_COUNT = 6;
 
     private Mesh mesh;
     private float halfWidth;
@@ -29,13 +29,12 @@ public class BackgroundMesh
         halfHeight = h * 0.5f;
 
         mesh = new Mesh(true,
-                        vertexCount,
-                        indexCount,
-                        new VertexAttribute(Usage.Position, 3, "a_position"), //$NON-NLS-1$
+                        VERTEX_COUNT,
+                        INDEX_COUNT,
+                        new VertexAttribute(Usage.Position, 3, "a_position"),  //$NON-NLS-1$
                         new VertexAttribute(Usage.ColorPacked, 4, "a_color")); //$NON-NLS-1$
 
         loadVertices();
-
         mesh.setIndices(new short[] { 0, 1, 2, 3, 4, 5 });
     }
 
@@ -46,7 +45,7 @@ public class BackgroundMesh
     
     public void render()
     {
-        mesh.render(GL20.GL_TRIANGLE_STRIP, 0, vertexCount);
+        mesh.render(GL20.GL_TRIANGLE_STRIP, 0, VERTEX_COUNT);
     }
 
     public void updateVertices(Vector2 center)

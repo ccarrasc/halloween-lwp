@@ -7,22 +7,25 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public final class Assets
 {
-    protected static TextureRegion ghostPumpkin;
+    protected static TextureRegion ghost;
     
+    /**
+     * Suppressed to prevent instantiation
+     */
     private Assets()
     {
-        // No instantiation
+        throw new AssertionError();
     }
     
     public static void load()
     {
         Texture texture = new Texture(Gdx.files.internal("sprites/ghost-v1.png"));
         texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-        ghostPumpkin = new TextureRegion(texture, 0, 0, 256, 256);
+        ghost = new TextureRegion(texture, 0, 0, 256, 256);
     }
     
     public static void dispose()
     {
-        ghostPumpkin.getTexture().dispose();
+        ghost.getTexture().dispose();
     }
 }

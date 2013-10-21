@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -25,9 +24,8 @@ public abstract class GameObjectPoolManager<T extends GameObject>
         public void run()
         {
             T gameObject = pool.obtain();
-            gameObject.init(getSpawnCoords());
+            gameObject.init(getPosition(), getAngle());
             activeObjects.add(gameObject);
-            //Gdx.app.log("Pool Manager", activeObjects.size() + " active ghosts");
         }
     };
 
@@ -49,7 +47,9 @@ public abstract class GameObjectPoolManager<T extends GameObject>
 
     protected abstract T newGameObject();
 
-    protected abstract Vector2 getSpawnCoords();
+    protected abstract Vector2 getPosition();
+
+    protected abstract float getAngle();
 
     public void update(SpriteBatch spriteBatch)
     {
@@ -74,7 +74,6 @@ public abstract class GameObjectPoolManager<T extends GameObject>
             Random rand = new Random();
             float delay = rand.nextInt(maxSpawnDelay);
             Timer.schedule(spawn, delay);
-            //Gdx.app.log("Timer", delay + " second delay set");
         }
     }
 }
