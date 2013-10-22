@@ -1,4 +1,4 @@
-package com.machinemode.lwp.halloween.sprites;
+package com.machinemode.lwp.spookypooky.sprites;
 
 import com.badlogic.gdx.physics.box2d.World;
 

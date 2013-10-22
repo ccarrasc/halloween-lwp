@@ -1,7 +1,9 @@
-package com.machinemode.lwp.halloween.sprites;
+package com.machinemode.lwp.spookypooky.sprites;
 
 import java.util.Random;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -18,7 +20,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 public final class Ghost implements GameObject, Poolable
 {
     private static final float MAX_RADIAN_ANGLE = 0.5f;
-    private static final int MAX_IMPULSE = 10;
+    private static final int MAX_IMPULSE = 2;
     private static final float ROTATION_STEP = 0.001f;
     private final Body body;
     private final Sprite sprite;
@@ -90,7 +92,8 @@ public final class Ghost implements GameObject, Poolable
     Ghost(World world, Builder builder)
     {
         radius = builder.diameter * 0.5f;
-        sprite = new Sprite(builder.textureRegion);
+        sprite = new Sprite(builder.textureRegion);        
+        sprite.setColor(1.0f, 1.0f, 1.0f, builder.diameter);
         sprite.setBounds(0, 0, builder.diameter, builder.diameter);
         sprite.setOrigin(radius, radius);   // center = [width/2, height/2]
         rotate = builder.rotate;

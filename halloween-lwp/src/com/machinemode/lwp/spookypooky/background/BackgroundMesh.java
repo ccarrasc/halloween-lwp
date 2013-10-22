@@ -1,4 +1,4 @@
-package com.machinemode.lwp.halloween.background;
+package com.machinemode.lwp.spookypooky.background;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;

@@ -1,4 +1,4 @@
-package com.machinemode.lwp.halloween;
+package com.machinemode.lwp.spookypooky;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;

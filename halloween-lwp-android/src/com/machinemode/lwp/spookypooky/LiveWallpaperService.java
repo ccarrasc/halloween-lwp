@@ -1,10 +1,11 @@
-package com.machinemode.lwp.halloween;
+package com.machinemode.lwp.spookypooky;
 
 import android.view.SurfaceHolder;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService;
+import com.machinemode.lwp.spookypooky.LiveWallpaper;
 
 public class LiveWallpaperService extends AndroidLiveWallpaperService
 {

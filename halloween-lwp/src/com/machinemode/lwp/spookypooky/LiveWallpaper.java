@@ -1,4 +1,4 @@
-package com.machinemode.lwp.halloween;
+package com.machinemode.lwp.spookypooky;
 
 import java.util.Random;
 
@@ -9,10 +9,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import com.machinemode.lwp.halloween.background.BackgroundMesh;
-import com.machinemode.lwp.halloween.physics.SimpleWorld;
-import com.machinemode.lwp.halloween.sprites.GameObjectPoolManager;
-import com.machinemode.lwp.halloween.sprites.Ghost;
+import com.machinemode.lwp.spookypooky.background.BackgroundMesh;
+import com.machinemode.lwp.spookypooky.physics.SimpleWorld;
+import com.machinemode.lwp.spookypooky.sprites.GameObjectPoolManager;
+import com.machinemode.lwp.spookypooky.sprites.Ghost;
 
 public class LiveWallpaper implements ApplicationListener
 {
@@ -67,7 +67,8 @@ public class LiveWallpaper implements ApplicationListener
             @Override
             protected Ghost newGameObject()
             {
-                return new Ghost.Builder(Assets.ghost, 2).angularDamping(0.2f)
+                float size = 1.0f + rand.nextFloat() * 0.5f;
+                return new Ghost.Builder(Assets.ghost, size).angularDamping(0.2f)
                                                          .linearDamping(0.5f)
                                                          .density(0.3f)
                                                          .friction(0.4f)

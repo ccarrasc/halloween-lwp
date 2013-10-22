@@ -1,4 +1,4 @@
-package com.machinemode.lwp.halloween.background;
+package com.machinemode.lwp.spookypooky.background;
 
 import java.util.List;
 
