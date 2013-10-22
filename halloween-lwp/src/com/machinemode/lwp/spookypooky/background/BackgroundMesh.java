@@ -16,9 +16,9 @@ public class BackgroundMesh
     private float halfWidth;
     private float halfHeight;
     private Vector2 center = new Vector2();
-    private int r = 191;
-    private int g = 81;
-    private int b = 7;
+    private int r = 220;
+    private int g = 220;
+    private int b = 220;
     private int a = 127;
     
     public BackgroundMesh(float w, float h, float x, float y)
